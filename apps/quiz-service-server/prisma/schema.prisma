@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  createdAt DateTime @default(now())
+  email     String?
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  updatedAt DateTime @updatedAt
+}
+
+model Quiz {
+  chapter     String?
+  createdAt   DateTime   @default(now())
+  description String?
+  id          String     @id @default(cuid())
+  questions   Question[]
+  subject     String?
+  title       String?
+  topic       String?
+  updatedAt   DateTime   @updatedAt
+}
+
+model Question {
+  createdAt    DateTime      @default(now())
+  explanations Explanation[]
+  id           String        @id @default(cuid())
+  options      Option[]
+  quiz         Quiz?         @relation(fields: [quizId], references: [id])
+  quizId       String?
+  text         String?
+  updatedAt    DateTime      @updatedAt
+}
+
+model Explanation {
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId String?
+  text       String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Option {
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  isCorrect  Boolean?
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId String?
+  text       String?
+  updatedAt  DateTime  @updatedAt
+}
